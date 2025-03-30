@@ -1,0 +1,22 @@
+{
+  "authforge.error": "Something was wrong. Please contact the admins.",
+  "authforge.welcome": "Use /register to sign up or /login to sign in.",
+  "authforge.wakeUp": "Wake up, you have only %s seconds to log in.",
+  "authforge.banned": "You've been banned. Please contact the admins.",
+  "authforge.wrongPassword": "Wrong password. Please try again.",
+  "authforge.wrongPasswordConfirmation": "The password confirmation doesn't match. Try again.",
+  "authforge.logged.yes": "yes",
+  "authforge.logged.no": "no",
+  "authforge.login.usage": "/login <password> - Allows you to authenticate on the server",
+  "authforge.login.notFound": "%s is not registered on this server.",
+  "authforge.login.success": "Have fun!",
+  "authforge.logged.usage": "/logged - tells you whether you are authenticated or not",
+  "authforge.login.wrongUUID": "Wrong UUID. Please be sure you use the same UUID when you registered your account.",
+  "authforge.login.wrongUsername": "Your username does not correspond to your credentials.",
+  "authforge.register.exist": "Someone has already registered with the username %s.",
+  "authforge.register.usage": "/register <password> <password>- Be careful when choosing it, you'll be asked to login each time you play.",
+  "authforge.register.success": "You are registered and authenticated, have fun!",
+  "authforge.changepassword.success": "Password changed!",
+  "authforge.changepassword.samePassword": "New password should be different than the previous one.",
+  "authforge.changepassword.usage": "/changepassword <old-password> <new-password> <confirmation> - Change your password."
+}

@@ -1,0 +1,100 @@
+
+#Server configuration settings
+[server]
+#Enable or disable the /login command. If disabled, the server will be opened to everyone. Default to true
+enableLogin = true
+#Enable or disable the /register command. Default to true
+enableRegister = true
+#Enable or disable the /changepassword command. Default to true
+enableChangePassword = true
+#delay in seconds a player can authenticate before being automatically kicked from the server. Default to 60
+#Range: 1 ~ 600
+delay = 60
+#language locale to be used. Default to 'en_us'
+#Allowed Values: EN_US, ID_ID
+language = "EN_US"
+#data store strategy to store player's data, choose between 'database' or 'file'. Default to 'file'
+#Allowed Values: FILE, DATABASE
+dataStore = "FILE"
+#whitelisted commands (can be used without being logged in)
+whitelistedCommands = ["register", "login", "logged", "help"]
+
+[database]
+#Column name of 'username'
+columnUsername = "username"
+#Column name of 'uuid'
+columnUuid = "uuid"
+#Column name of 'password'
+columnPassword = "password"
+#Column name of 'banned'
+columnBanned = "banned"
+#Name of the database
+db = "authforge"
+#SQL dialect
+dialect = "mariadb"
+#Server hosting the database
+host = "localhost"
+#JDBC driver to use
+driver = "org.mariadb.jdbc.Driver"
+#Database user
+user = "user"
+#Database users's password
+password = "password"
+#Port to be used
+#Range: 1024 ~ 65535
+port = 3306
+#Table to be used
+table = "players"
+
+[i18n]
+
+[i18n.authforge]
+#Something was wrong. Please contact the admins.
+error = ""
+#Use /register to sign up or /login to sign in.
+welcome = ""
+#Wake up, you have only %s seconds to log in.
+wakeUp = ""
+#You've been banned. Please contact the admins.
+banned = ""
+#Wrong password. Please try again.
+wrongPassword = ""
+#The password confirmation doesn't match. Try again.
+wrongPasswordConfirmation = ""
+
+[i18n.authforge.logged]
+#yes
+yes = ""
+#no
+no = ""
+#/logged - tells you whether you are authenticated or not
+usage = ""
+
+[i18n.authforge.login]
+#/login <password> - Allows you to authenticate on the server
+usage = ""
+#%s is not registered on this server.
+notFound = ""
+#Have fun!
+success = ""
+#Wrong UUID. Please be sure you use the same UUID when you registered your account.
+wrongUUID = ""
+#Your username does not correspond to your credentials.
+wrongUsername = ""
+
+[i18n.authforge.register]
+#Someone has already registered with the username %s.
+exist = ""
+#/register <password> <password>- Be careful when choosing it, you'll be asked to login each time you play.
+usage = ""
+#You are registered and authenticated, have fun!
+success = ""
+
+[i18n.authforge.changepassword]
+#Password changed!
+success = ""
+#New password should be different than the previous one.
+samePassword = ""
+#/changepassword <old-password> <new-password> <confirmation> - Change your password.
+usage = ""
+
