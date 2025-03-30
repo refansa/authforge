@@ -56,13 +56,14 @@ public class RegisterCommand implements AuthCommand, Command<CommandSourceStack>
      * @return 1 if something goes wrong, 0 otherwise.
      */
     public static int execute(CommandSourceStack source, Handler handler, Guard guard, Payload payload) {
+        AuthForge.LOGGER.info("register execute");
         try {
             Player player = source.getPlayerOrException();
             if (guard.register(payload) && !handler.isLogged(source.getPlayerOrException())) {
                 handler.authorizePlayer(player);
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.register.success"), true);
             }
-            AuthForge.LOGGER.debug("register success");
+            AuthForge.LOGGER.info("register success");
             return 0;
         } catch (RegisterException e) {
             source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey(), payload.getPlayer().getUsername()));
@@ -72,8 +73,9 @@ public class RegisterCommand implements AuthCommand, Command<CommandSourceStack>
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);
         } catch (Exception e) {
-            AuthForge.LOGGER.debug("register failed: ", e);
+            AuthForge.LOGGER.info("register error: ", e);
         }
+        AuthForge.LOGGER.info("register failed");
         return 1;
     }
 }

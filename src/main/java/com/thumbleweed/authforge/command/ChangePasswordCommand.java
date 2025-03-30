@@ -60,12 +60,13 @@ public class ChangePasswordCommand implements AuthCommand {
      * @return 1 if something goes wrong, 0 otherwise.
      */
     public static int execute(CommandSourceStack source, Handler handler, Guard guard, Payload payload) {
+        AuthForge.LOGGER.info("changepassword execute");
         try {
             Player player = source.getPlayerOrException();
             if (handler.isLogged(player)) {
                 guard.updatePassword(payload);
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.changepassword.success"), true);
-                AuthForge.LOGGER.debug("changepassword success");
+                AuthForge.LOGGER.info("changepassword success");
                 return 0;
             } else {
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.welcome"), true);
@@ -78,8 +79,9 @@ public class ChangePasswordCommand implements AuthCommand {
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);
         } catch (Exception e) {
-            AuthForge.LOGGER.debug("changepassword failed: ", e);
+            AuthForge.LOGGER.info("changepassword error: ", e);
         }
+        AuthForge.LOGGER.info("changepassword failed");
         return 1;
     }
 }
