@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class AuthForge {
     public static final String ID = "authforge";
     public static final String NAME = "Auth Forge";
-    public static final String VERSION = "1.20.1-0.0.2.0";
+    public static final String VERSION = "1.20.1-0.0.2.1";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 

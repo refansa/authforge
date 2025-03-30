@@ -24,21 +24,21 @@ import java.util.Map;
 @Mod.EventBusSubscriber(modid = AuthForge.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    static ForgeConfigSpec SPEC;
+    static final ForgeConfigSpec SPEC;
 
     // Configuration Properties
-    public static ForgeConfigSpec.BooleanValue enableLogin;
-    public static ForgeConfigSpec.BooleanValue enableRegister;
-    public static ForgeConfigSpec.BooleanValue enableChangePassword;
-    public static ForgeConfigSpec.IntValue delay;
-    public static ForgeConfigSpec.EnumValue<LanguageMap.Language> language;
-    public static ForgeConfigSpec.EnumValue<DataStoreStrategy.Strategy> dataStore;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> whitelistedCommands;
+    public static final ForgeConfigSpec.BooleanValue enableLogin;
+    public static final ForgeConfigSpec.BooleanValue enableRegister;
+    public static final ForgeConfigSpec.BooleanValue enableChangePassword;
+    public static final ForgeConfigSpec.IntValue delay;
+    public static final ForgeConfigSpec.EnumValue<LanguageMap.Language> language;
+    public static final ForgeConfigSpec.EnumValue<DataStoreStrategy.Strategy> dataStore;
+    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> whitelistedCommands;
 
-    public static DatabaseConfig databaseConfig;
-    public static I18nConfig i18nConfig;
+    public static final DatabaseConfig databaseConfig;
+    public static final I18nConfig i18nConfig;
 
-    private static void setupConfig() {
+    static {
         BUILDER.comment("Server configuration").push("server");
 
         enableLogin = BUILDER.
@@ -88,8 +88,6 @@ public class Config {
     }
 
     public static void register(final ModLoadingContext context) {
-        setupConfig();
-
         context.registerConfig(ModConfig.Type.SERVER, SPEC);
     }
 
