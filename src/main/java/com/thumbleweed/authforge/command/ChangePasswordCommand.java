@@ -65,6 +65,7 @@ public class ChangePasswordCommand implements AuthCommand {
             if (handler.isLogged(player)) {
                 guard.updatePassword(payload);
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.changepassword.success"), true);
+                AuthForge.LOGGER.debug("changepassword success");
                 return 0;
             } else {
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.welcome"), true);
@@ -76,6 +77,8 @@ public class ChangePasswordCommand implements AuthCommand {
             AuthForge.LOGGER.catching(e);
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);
+        } catch (Exception e) {
+            AuthForge.LOGGER.debug("changepassword failed: ", e);
         }
         return 1;
     }
