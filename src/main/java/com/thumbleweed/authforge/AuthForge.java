@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 public class AuthForge {
     public static final String ID = "authforge";
     public static final String NAME = "Auth Forge";
-    public static final String VERSION = "1.20.1-0.0.2.4";
+    public static final String VERSION = "1.20.1-0.0.2.5";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -32,6 +32,7 @@ public class AuthForge {
         MinecraftForge.EVENT_BUS.register(this);
 
         if (Config.isAuthEnabled()) {
+            AuthForge.LOGGER.info("Auth enabled!");
             try {
                 Guard guard = createGuard();
                 Handler handler = new Handler();
@@ -41,6 +42,8 @@ public class AuthForge {
             } catch (Exception e) {
                 AuthForge.LOGGER.error("Whoops! An exception: ", e);
             }
+        } else {
+            AuthForge.LOGGER.info("Auth disabled!");
         }
     }
 

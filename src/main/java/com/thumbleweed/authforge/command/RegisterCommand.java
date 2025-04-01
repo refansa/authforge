@@ -59,6 +59,7 @@ public class RegisterCommand implements AuthCommand, Command<CommandSourceStack>
         AuthForge.LOGGER.info("register execute");
         try {
             Player player = source.getPlayerOrException();
+            AuthForge.LOGGER.info("register player: {}", player);
             if (guard.register(payload) && !handler.isLogged(source.getPlayerOrException())) {
                 handler.authorizePlayer(player);
                 source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.register.success"), true);
