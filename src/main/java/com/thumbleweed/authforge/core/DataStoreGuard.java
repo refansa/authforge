@@ -1,5 +1,6 @@
 package com.thumbleweed.authforge.core;
 
+import com.thumbleweed.authforge.AuthForge;
 import com.thumbleweed.authforge.core.datastore.DataStorePlayer;
 import com.thumbleweed.authforge.core.datastore.DataStorePlayerImpl;
 import com.thumbleweed.authforge.core.datastore.DataStoreStrategy;
@@ -34,11 +35,17 @@ public class DataStoreGuard implements Guard {
 
     @Override
     public boolean register(Payload payload) throws AuthForgeException {
+        AuthForge.LOGGER.info("register init");
         Validator validator = new RegisterValidator();
+        AuthForge.LOGGER.info("register validator");
         validator.validate(payload);
+        AuthForge.LOGGER.info("register playerProxy");
         DataStorePlayer playerProxy = new DataStorePlayerImpl(payload.getPlayer());
+        AuthForge.LOGGER.info("register check exist");
         if (this.dataStore.isExist(playerProxy)) throw new PlayerAlreadyExistException();
+        AuthForge.LOGGER.info("register hash password");
         this.hashPassword(playerProxy, payload.getArgs()[payload.getArgs().length - 1]);
+        AuthForge.LOGGER.info("register add data");
         return this.dataStore.add(playerProxy);
     }
 

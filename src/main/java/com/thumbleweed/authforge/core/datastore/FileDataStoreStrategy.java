@@ -25,10 +25,6 @@ public class FileDataStoreStrategy implements DataStoreStrategy {
 
         String url = String.format("jdbc:sqlite:%s", file.getAbsolutePath());
 
-        if (JDBC.isValidURL(url)) {
-            AuthForge.LOGGER.info("Using JDBC URL: {}", url);
-        }
-
         this.connectionFactory = new ConnectionFactoryImpl(url, DEFAULT_DRIVER);
 
         this.createTable();
