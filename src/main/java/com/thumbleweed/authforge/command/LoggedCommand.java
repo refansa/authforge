@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.thumbleweed.authforge.event.Handler;
-import com.thumbleweed.authforge.util.text.ServerTranslationTextComponent;
+import com.thumbleweed.authforge.util.text.TextComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +35,7 @@ public class LoggedCommand implements AuthCommand {
     public static int execute(CommandSourceStack source, ServerPlayer player, Handler handler) {
         boolean logged = handler.isLogged(player);
         String translationKey = "authforge.logged." + (logged ? "yes" : "no");
-        source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent(translationKey), false);
+        source.sendSuccess(() -> TextComponent.Create(translationKey), false);
         return 0;
     }
 }

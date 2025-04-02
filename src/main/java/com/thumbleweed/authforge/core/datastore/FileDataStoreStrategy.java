@@ -1,10 +1,8 @@
 package com.thumbleweed.authforge.core.datastore;
 
-import com.thumbleweed.authforge.AuthForge;
 import com.thumbleweed.authforge.core.datastore.db.ConnectionFactory;
 import com.thumbleweed.authforge.core.datastore.db.ConnectionFactoryImpl;
 import com.thumbleweed.authforge.core.exception.AuthForgeException;
-import org.sqlite.JDBC;
 
 import java.io.File;
 import java.sql.Connection;
@@ -34,7 +32,7 @@ public class FileDataStoreStrategy implements DataStoreStrategy {
     }
 
     public FileDataStoreStrategy(File file) throws SQLException, ClassNotFoundException {
-        this(file, new BcryptPasswordHash());
+        this(file, new PlainPasswordHash());
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.thumbleweed.authforge.core.Payload;
 import com.thumbleweed.authforge.core.exception.AuthForgeException;
 import com.thumbleweed.authforge.core.exception.RegisterException;
 import com.thumbleweed.authforge.event.Handler;
-import com.thumbleweed.authforge.util.text.ServerTranslationTextComponent;
+import com.thumbleweed.authforge.util.text.TextComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
@@ -62,14 +62,14 @@ public class RegisterCommand implements AuthCommand, Command<CommandSourceStack>
             AuthForge.LOGGER.info("register player: {}", player);
             if (guard.register(payload) && !handler.isLogged(source.getPlayerOrException())) {
                 handler.authorizePlayer(player);
-                source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.register.success"), true);
+                source.sendSuccess(() -> TextComponent.Create("authforge.register.success"), true);
             }
             AuthForge.LOGGER.info("register success");
             return 0;
         } catch (RegisterException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey(), payload.getPlayer().getUsername()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey(), payload.getPlayer().getUsername()));
         } catch (AuthForgeException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey(), payload.getPlayer().getUsername()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey(), payload.getPlayer().getUsername()));
             AuthForge.LOGGER.catching(e);
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);

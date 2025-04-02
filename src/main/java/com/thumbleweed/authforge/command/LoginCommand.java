@@ -12,7 +12,7 @@ import com.thumbleweed.authforge.core.Payload;
 import com.thumbleweed.authforge.core.exception.AuthForgeException;
 import com.thumbleweed.authforge.core.exception.LoginException;
 import com.thumbleweed.authforge.event.Handler;
-import com.thumbleweed.authforge.util.text.ServerTranslationTextComponent;
+import com.thumbleweed.authforge.util.text.TextComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
@@ -51,13 +51,13 @@ public class LoginCommand implements AuthCommand, Command<CommandSourceStack> {
             Player player = source.getPlayerOrException();
             if (!handler.isLogged(player) && guard.authenticate(payload)) {
                 handler.authorizePlayer(player);
-                source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.login.success"), true);
+                source.sendSuccess(() -> TextComponent.Create("authforge.login.success"), true);
             }
             return 0;
         } catch (LoginException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey(), payload.getPlayer().getUsername()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey(), payload.getPlayer().getUsername()));
         } catch (AuthForgeException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey(), payload.getPlayer().getUsername()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey(), payload.getPlayer().getUsername()));
             AuthForge.LOGGER.catching(e);
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);

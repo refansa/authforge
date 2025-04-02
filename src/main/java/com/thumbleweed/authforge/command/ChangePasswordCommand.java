@@ -11,7 +11,7 @@ import com.thumbleweed.authforge.core.Payload;
 import com.thumbleweed.authforge.core.exception.AuthForgeException;
 import com.thumbleweed.authforge.core.exception.ChangePasswordException;
 import com.thumbleweed.authforge.event.Handler;
-import com.thumbleweed.authforge.util.text.ServerTranslationTextComponent;
+import com.thumbleweed.authforge.util.text.TextComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
@@ -65,16 +65,16 @@ public class ChangePasswordCommand implements AuthCommand {
             Player player = source.getPlayerOrException();
             if (handler.isLogged(player)) {
                 guard.updatePassword(payload);
-                source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.changepassword.success"), true);
+                source.sendSuccess(() -> TextComponent.Create("authforge.changepassword.success"), true);
                 AuthForge.LOGGER.info("changepassword success");
                 return 0;
             } else {
-                source.sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.welcome"), true);
+                source.sendSuccess(() -> TextComponent.Create("authforge.welcome"), true);
             }
         } catch (ChangePasswordException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey()));
         } catch (AuthForgeException e) {
-            source.sendFailure(ServerTranslationTextComponent.CreateComponent(e.getTranslationKey()));
+            source.sendFailure(TextComponent.Create(e.getTranslationKey()));
             AuthForge.LOGGER.catching(e);
         } catch (CommandSyntaxException e) {
             AuthForge.LOGGER.catching(e);

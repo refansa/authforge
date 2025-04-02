@@ -3,7 +3,7 @@ package com.thumbleweed.authforge.event;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.thumbleweed.authforge.config.Config;
 import com.thumbleweed.authforge.core.PlayerDescriptor;
-import com.thumbleweed.authforge.util.text.ServerTranslationTextComponent;
+import com.thumbleweed.authforge.util.text.TextComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundDisconnectPacket;
@@ -30,24 +30,34 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class Handler {
+    /**
+     * A scheduler to keep track of the player's timing before getting kicked.
+     */
     private final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
+    /**
+     * Descriptors of the player current position, removed when the player successfully logged in.
+     */
     private final Map<Player, PlayerDescriptor> descriptors = new HashMap<>();
+    /**
+     * Stored value of the player logging status.
+     */
     private final Map<Player, Boolean> logged = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        Player entity = event.getEntity();
+        Player player = event.getEntity();
+        Vec3 position = player.position();
 
-        // initializing timer for kicking player if they haven't logged in
-        Vec3 pos = entity.position();
-        PlayerDescriptor dc = new PlayerDescriptor(pos.x, pos.y, pos.z);
-        descriptors.put(entity, dc);
+        PlayerDescriptor descriptor = new PlayerDescriptor(position.x, position.y, position.z);
+        descriptors.put(player, descriptor);
+
+        // initializing a timer for kicking player if they haven't logged in.
         scheduler.schedule(
                 () -> {
-                    if (descriptors.containsKey(entity)) {
-                        descriptors.remove(entity);
-                        logged.remove(entity);
-                        ((ServerPlayer) event.getEntity()).connection.send(new ClientboundDisconnectPacket(wakeUp()));
+                    if (descriptors.containsKey(player)) {
+                        descriptors.remove(player);
+                        logged.remove(player);
+                        ((ServerPlayer) player).connection.send(new ClientboundDisconnectPacket(wakeUp()));
                     }
                 },
                 Config.delay.get(),
@@ -57,12 +67,15 @@ public class Handler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
-        logged.remove(event.getEntity());
+        Player player = event.getEntity();
+
+        logged.remove(player);
     }
 
     @SubscribeEvent
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
         Player player = event.getEntity();
+
         if (descriptors.containsKey(player) && event.getSide() == LogicalSide.SERVER) {
             event.setCanceled(true);
             teleportTo(player, descriptors.get(player));
@@ -71,67 +84,75 @@ public class Handler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerEvent(PlayerEvent event) {
-        Player entity = event.getEntity();
-        if (descriptors.containsKey(entity) && event.isCancelable()) {
+        Player player = event.getEntity();
+
+        if (descriptors.containsKey(player) && event.isCancelable()) {
             event.setCanceled(true);
-            teleportTo(entity, descriptors.get(entity));
-            sayWelcome(entity);
+            teleportTo(player, descriptors.get(player));
+            sayWelcome(player);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onCommand(CommandEvent event) throws CommandSyntaxException {
+    public void onCommand(CommandEvent event) {
         CommandSourceStack source = event.getParseResults().getContext().getSource();
         try {
-            Player playerEntity = source.getPlayerOrException();
-            List<? extends String> whitelist = Config.whitelistedCommands.get();
+            Player player = source.getPlayerOrException();
+
+            List<? extends String> whitelistedCommands = Config.whitelistedCommands.get();
+
+            // Get the name of the command. i.e. after the character '/'.
             String name = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
-            boolean isCommandAllowed = whitelist.contains(name);
-            if (descriptors.containsKey(playerEntity) && !isCommandAllowed && event.isCancelable()) {
+
+            boolean isCommandAllowed = whitelistedCommands.contains(name);
+            if (descriptors.containsKey(player) && !isCommandAllowed && event.isCancelable()) {
                 event.setCanceled(true);
-                event
-                        .getParseResults()
-                        .getContext().getSource()
-                        .sendSuccess(() -> ServerTranslationTextComponent.CreateComponent("authforge.welcome"), false);
+                source.sendSuccess(
+                        () -> TextComponent.Create("authforge.welcome"),
+                        false
+                );
             }
         } catch (CommandSyntaxException e) {
-            // raised when command comes from non-player entity
-            return;
+            source.sendSuccess(
+                    () -> Component.literal(e.getMessage()), false
+            );
         }
     }
 
     @SubscribeEvent
     public void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
-        if (descriptors.containsKey(event.player) && event.side == LogicalSide.SERVER) {
-            teleportTo(event.player, descriptors.get(event.player));
+        Player player = event.player;
+
+        if (descriptors.containsKey(player) && event.side == LogicalSide.SERVER) {
+            teleportTo(player, descriptors.get(player));
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChatEvent(ServerChatEvent event) {
-        Player entity = event.getPlayer();
-        if (descriptors.containsKey(entity)) {
-            this.sayWelcome(entity);
+        Player player = event.getPlayer();
+
+        if (descriptors.containsKey(player)) {
             event.setCanceled(true);
+            this.sayWelcome(player);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onTossEvent(ItemTossEvent event) {
-        Player entity = event.getPlayer();
-        if (event.isCancelable() && descriptors.containsKey(entity)) {
+        Player player = event.getPlayer();
+
+        if (event.isCancelable() && descriptors.containsKey(player)) {
             event.setCanceled(true);
-            entity.getInventory().add(event.getEntity().getItem());
-            sayWelcome(entity);
+            player.getInventory().add(event.getEntity().getItem());
+            sayWelcome(player);
         }
     }
 
     private void handleLivingEvents(LivingEvent event, Entity entity) {
-        //noinspection SuspiciousMethodCalls
-        if (event.getEntity() instanceof Player player && event.isCancelable() && descriptors.containsKey(entity)) {
+        if (entity instanceof Player player && event.isCancelable() && descriptors.containsKey(player)) {
             event.setCanceled(true);
-            @SuppressWarnings("SuspiciousMethodCalls")
-            PlayerDescriptor desc = descriptors.get(event.getEntity());
+            PlayerDescriptor desc = descriptors.get(player);
             player.teleportTo(desc.getX(), desc.getY(), desc.getZ());
             sayWelcome(player);
         }
@@ -171,12 +192,15 @@ public class Handler {
         return logged.getOrDefault(player, false);
     }
 
-    private void sayWelcome(Player playerEntity) {
-        playerEntity.displayClientMessage(ServerTranslationTextComponent.CreateComponent("authforge.welcome", playerEntity.getUUID()), false);
+    private void sayWelcome(Player player) {
+        player.displayClientMessage(
+                TextComponent.Create("authforge.welcome", player.getUUID()),
+                false
+        );
     }
 
     private static Component wakeUp() {
-        return ServerTranslationTextComponent.CreateComponent("authforge.wakeUp", Config.delay.get());
+        return TextComponent.Create("authforge.wakeUp", Config.delay.get());
     }
 
     private void teleportTo(Player player, PlayerDescriptor pos) {
