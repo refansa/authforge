@@ -108,13 +108,13 @@ public class Handler {
             if (descriptors.containsKey(player) && !isCommandAllowed && event.isCancelable()) {
                 event.setCanceled(true);
                 source.sendSuccess(
-                        () -> TextComponent.Create("authforge.welcome"),
+                        TextComponent.Create("authforge.welcome"),
                         false
                 );
             }
         } catch (CommandSyntaxException e) {
             source.sendSuccess(
-                    () -> Component.literal(e.getMessage()), false
+                    Component.literal(e.getMessage()), false
             );
         }
     }

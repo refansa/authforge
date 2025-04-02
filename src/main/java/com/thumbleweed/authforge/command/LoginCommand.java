@@ -51,7 +51,7 @@ public class LoginCommand implements AuthCommand, Command<CommandSourceStack> {
             Player player = source.getPlayerOrException();
             if (!handler.isLogged(player) && guard.authenticate(payload)) {
                 handler.authorizePlayer(player);
-                source.sendSuccess(() -> TextComponent.Create("authforge.login.success"), true);
+                source.sendSuccess(TextComponent.Create("authforge.login.success"), true);
             }
             return 0;
         } catch (LoginException e) {

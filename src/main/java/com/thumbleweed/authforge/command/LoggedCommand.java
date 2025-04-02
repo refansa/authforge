@@ -35,7 +35,7 @@ public class LoggedCommand implements AuthCommand {
     public static int execute(CommandSourceStack source, ServerPlayer player, Handler handler) {
         boolean logged = handler.isLogged(player);
         String translationKey = "authforge.logged." + (logged ? "yes" : "no");
-        source.sendSuccess(() -> TextComponent.Create(translationKey), false);
+        source.sendSuccess(TextComponent.Create(translationKey), false);
         return 0;
     }
 }

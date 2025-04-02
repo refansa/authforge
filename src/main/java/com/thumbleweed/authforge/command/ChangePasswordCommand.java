@@ -65,11 +65,11 @@ public class ChangePasswordCommand implements AuthCommand {
             Player player = source.getPlayerOrException();
             if (handler.isLogged(player)) {
                 guard.updatePassword(payload);
-                source.sendSuccess(() -> TextComponent.Create("authforge.changepassword.success"), true);
+                source.sendSuccess(TextComponent.Create("authforge.changepassword.success"), true);
                 AuthForge.LOGGER.info("changepassword success");
                 return 0;
             } else {
-                source.sendSuccess(() -> TextComponent.Create("authforge.welcome"), true);
+                source.sendSuccess(TextComponent.Create("authforge.welcome"), true);
             }
         } catch (ChangePasswordException e) {
             source.sendFailure(TextComponent.Create(e.getTranslationKey()));
